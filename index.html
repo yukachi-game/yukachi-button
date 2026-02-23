@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ゆかちボタン</title>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink:    #ff6eb4;
+    --peach:   #ffb3d1;
+    --yellow:  #ffe066;
+    --mint:    #7fe7cc;
+    --lavender:#c9b8ff;
+    --sky:     #a8d8ff;
+    --bg:      #fff5f9;
+    --card:    #ffffff;
+    --text:    #4a2040;
+    --shadow:  rgba(255,110,180,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Zen Maru Gothic', 'M PLUS Rounded 1c', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── 背景デコレーション ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(circle at 10% 20%, #ffd6ec55 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, #d6f0ff55 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, #fffbe6aa 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    position: relative; z-index: 1;
+    text-align: center;
+    padding: 2.5rem 1rem 1rem;
+  }
+  header .emoji-row {
+    font-size: 2rem;
+    letter-spacing: 0.3em;
+    margin-bottom: 0.5rem;
+    animation: bounce-row 2s ease-in-out infinite;
+  }
+  @keyframes bounce-row {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-6px); }
+  }
+  header h1 {
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--lavender) 50%, var(--sky) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 2px 8px var(--shadow));
+    letter-spacing: 0.05em;
+  }
+  header p {
+    margin-top: 0.4rem;
+    color: #c070a0;
+    font-size: 0.9rem;
+  }
+
+  
+
+  /* ── グリッド ── */
+  main {
+    position: relative; z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+    padding: 1.2rem 1.2rem 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  /* ── カード ── */
+  .card {
+    background: var(--card);
+    border-radius: 20px;
+    padding: 1.1rem 1.2rem;
+    box-shadow: 0 4px 18px var(--shadow);
+    display: flex; flex-direction: column; gap: 0.7rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: var(--accent-color, var(--pink));
+    border-radius: 20px 20px 0 0;
+  }
+  .card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 10px 30px var(--shadow);
+    border-color: var(--accent-color, var(--peach));
+  }
+  .card.playing {
+    border-color: var(--pink);
+    background: linear-gradient(135deg, #fff0f8 0%, #f8f0ff 100%);
+    animation: pulse-card 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-card {
+    0%,100% { box-shadow: 0 4px 18px var(--shadow); }
+    50%      { box-shadow: 0 4px 28px rgba(255,110,180,0.35); }
+  }
+
+  /* カード上部：番号＋キャラ名 */
+  .card-meta {
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .num-badge {
+    font-size: 0.72rem;
+    font-weight: 900;
+    min-width: 2rem;
+    text-align: center;
+    padding: 0.2rem 0.4rem;
+    background: var(--accent-color, var(--pink));
+    color: white;
+    border-radius: 8px;
+    line-height: 1;
+  }
+  .chara-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--accent-color, var(--pink));
+    background: color-mix(in srgb, var(--accent-color, var(--pink)) 12%, white);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  /* セリフ */
+  .serif-text {
+    font-size: 0.97rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.55;
+    flex: 1;
+  }
+
+  /* 再生ボタン */
+  .play-btn {
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+    padding: 0.55rem 1rem;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent-color, var(--pink)), color-mix(in srgb, var(--accent-color, var(--pink)) 60%, var(--lavender)));
+    color: white;
+    box-shadow: 0 3px 12px color-mix(in srgb, var(--accent-color, var(--pink)) 40%, transparent);
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .play-btn:hover    { filter: brightness(1.08); transform: scale(1.04); }
+  .play-btn:active   { transform: scale(0.97); }
+  .play-btn .icon    { font-size: 1.1rem; transition: transform 0.15s; }
+  .play-btn.playing .icon { animation: spin-note 0.6s linear infinite; }
+  @keyframes spin-note {
+    0%   { transform: rotate(0deg) scale(1.2); }
+    50%  { transform: rotate(20deg) scale(1.3); }
+    100% { transform: rotate(0deg) scale(1.2); }
+  }
+
+  /* カードが非表示のとき */
+  .card.hidden { display: none; }
+
+  /* ── フローティング波形 ── */
+  #now-playing {
+    display: none;
+    position: fixed; bottom: 1.2rem; left: 50%; transform: translateX(-50%);
+    background: white;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    box-shadow: 0 4px 24px rgba(255,110,180,0.3);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--pink);
+    align-items: center; gap: 0.6rem;
+    white-space: nowrap;
+    z-index: 100;
+    max-width: 90vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #now-playing.visible { display: flex; animation: slide-up 0.3s ease; }
+  @keyframes slide-up {
+    from { opacity:0; transform: translateX(-50%) translateY(16px); }
+    to   { opacity:1; transform: translateX(-50%) translateY(0); }
+  }
+  .wave-bars {
+    display: flex; align-items: center; gap: 2px;
+  }
+  .wave-bars span {
+    display: block; width: 3px; border-radius: 3px;
+    background: var(--pink);
+    animation: wave 0.8s ease-in-out infinite;
+  }
+  .wave-bars span:nth-child(1) { height: 8px;  animation-delay: 0.0s; }
+  .wave-bars span:nth-child(2) { height: 14px; animation-delay: 0.1s; }
+  .wave-bars span:nth-child(3) { height: 10px; animation-delay: 0.2s; }
+  .wave-bars span:nth-child(4) { height: 16px; animation-delay: 0.3s; }
+  .wave-bars span:nth-child(5) { height: 8px;  animation-delay: 0.15s; }
+  @keyframes wave {
+    0%,100% { transform: scaleY(1); }
+    50%      { transform: scaleY(0.3); }
+  }
+
+  /* ── レスポンシブ ── */
+  @media (max-width: 480px) {
+    main { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="emoji-row">🌙　🦊　🍒</div>
+  <h1>ゆかちボタン</h1>
+  <p>聞きたいセリフをタップ！</p>
+</header>
+
+
+
+<main id="card-container"></main>
+
+<!-- 再生中バー -->
+<div id="now-playing">
+  <div class="wave-bars">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+  <span id="now-text">再生中...</span>
+</div>
+
+<script>
+// =====================================================================
+//  セリフファイル指定ここから
+// =====================================================================
+const voices = [
+  { encodedFile: "MDFf44Ga44Gj44Go5LiA57eS44Gr5bGF44KI44GG44GtX-OChuOBi-OBo-eLkA.dat", num:"01", serif:"ずっと一緒に居ようね", chara:"ゆかっ狐" },
+  { encodedFile: "MDJf5ZCb44Gg44GR44Gq44GuX-ODoeOCp-ODvOOBoQ.dat", num:"02", serif:"君だけなの", chara:"メェーち" },
+  { encodedFile: "MDNf5aW944GNX-ODieODiuODq-KXi-ODgOODg-OBoQ.dat", num:"03", serif:"好き", chara:"ドナル〇ダッち" },
+  { encodedFile: "MDRf5pys5b2T44Gv44GT44KT44Gq44GT44Go44GX44Gf44GP44Gq44GE44GuX-OBoeODvOOCug.dat", num:"04", serif:"本当はこんなことしたくないの", chara:"ちーズ" },
+  { encodedFile: "MDVf44Ga44Gj44Go5YKN44Gr5bGF44Gm44GtX-ODkuODhOOBoQ.dat", num:"05", serif:"ずっと傍に居てね", chara:"ヒツち" },
+  { encodedFile: "MDZf5auM44GE44Gr44Gq44KJ44Gq44GE44GnX-ODiOODquOBoQ.dat", num:"06", serif:"嫌いにならないで", chara:"トリち" },
+  { encodedFile: "MDdf44Ok44OA44Ok44OA44Ok44OA44Ok44OAX-OCquOCpuOBoQ.dat", num:"07", serif:"ヤダヤダヤダヤダ", chara:"オウち" },
+  { encodedFile: "MDhf5oCW44GM44KJ44Gb44Gh44KD44Gj44Gm44CB44GU44KB44KT44GtX-ODr-OCt1pPWeKYheOBoQ.dat", num:"08", serif:"怖がらせちゃって、ごめんね", chara:"ワシZOY★ち" },
+  { encodedFile: "MDlf5aW944GN44CC5aW944GN5aW944GN44CC5aW944GN5aW944GN5aW944GNX-ODmuOBoQ.dat", num:"09", serif:"好き。好き好き。好き好き好き", chara:"ぺち" },
+  { encodedFile: "MTBf5LuK44CB5Lya44GE44Gr6KGM44GP44GL44KJ44GtX-OBl-OCjeOBj-OBvuOBoQ.dat", num:"10", serif:"今、会いに行くからね", chara:"しろくまち" },
+  { encodedFile: "MTFf44GE44Gk44KC6KaL44Gm44KL44KIX-OCu-OCpOOCpuOBoQ.dat", num:"11", serif:"いつも見てるよ", chara:"セイウち" },
+  { encodedFile: "MTJf56eB44Gu44GT44Go5aW944GN77yfX-OBj-OBvuOBoQ.dat", num:"12", serif:"私のこと好き？", chara:"くまち" },
+  { encodedFile: "MTNf44Gq44O844KT44Gn44KC44GX44Gm44GC44GS44KLX1NVTuWApO-8geODlOODs-OBoe-8gQ.dat", num:"13", serif:"なーんでもしてあげる", chara:"SUN値！ピンチ！" },
+  { encodedFile: "MTRf44Gb44KT44Gx44O844GE44CB44GU6aOv6KGM44GN44G-44GX44KH77yfX-OBv-OBv-e-jg.dat", num:"14", serif:"せんぱーい、ご飯行きましょ？", chara:"みみ美" },
+  { encodedFile: "MTVf44Gq44KT44Gn57SE5p2f56C044KL44Gu77yfX-ODs-OCtOOBoQ.dat", num:"15", serif:"なんで約束破るの？", chara:"ンゴち" },
+  { encodedFile: "MTZf44GU44KB44KT44Gq44GV44GE44GU44KB44KT44Gq44GV44GE44GU44KB44KT44Gq44GV44GEX-OBlOOCgeOCk-OBquOBleOBhOOBoQ.dat", num:"16", serif:"ごめんなさいごめんなさ…なさい", chara:"ごめんなさいち" },
+  { encodedFile: "MTdf44KG44GL44Gh44Gg44Gr44KD44KT77yBX-OChuOBi-OBreOBkw.dat", num:"17", serif:"ゆかちだにゃん！", chara:"ゆかねこ" },
+  { encodedFile: "MThf44Gq44KT44Gn6Kyd44Gj44Gm44KC6Kix44GX44Gm44GP44KM44Gq44GE44GuX-eZvueNo-OBrueOi-OBoQ.dat", num:"18", serif:"なんで謝っても許してくれないの", chara:"百獣の王ち" },
+  { encodedFile: "MTlf44GT44GT44Gv5Lu744Gb44Gm77yB6YCD44GS44Gm77yBX-OCqOODrOODleOCoeODs-ODiOOCq-OCt-ODnuOBoQ.dat", num:"19", serif:"ここは任せて！逃げて！", chara:"エレファントカシマち" },
+  { encodedFile: "MjBf5ZCb44GM6YCD44GS44KI44GG44Go44GZ44KL44GL44KJ44Gg44KIX-OBi-OCgeOBoQ.dat", num:"20", serif:"君が逃げようとするからだよ", chara:"かめち" },
+  { encodedFile: "MjFf44Gd44KM44Gp44GT44Gu5aWz77yfX-ODneODneOBoQ.dat", num:"21", serif:"それどこの女？", chara:"ポポち" },
+  { encodedFile: "MjJf44GT44Gj44Gh6KaL44Gm44KI44CB44KG44GL44Gh44KS6KaL44GmX-ibmeOBruicnOOBoQ.dat", num:"22", serif:"こっち見てよ、ゆかちを見て", chara:"蛙の蜜ち" },
+  { encodedFile: "MjNf44KC44GG6YCD44GS44KJ44KM44Gq44GE44GtX-e-juWRs-OBoQ.dat", num:"23", serif:"もう逃げられないね", chara:"美味ち" },
+  { encodedFile: "MjRf44Gq44KT44Gn44Gd44KT44Gq44GT44Go6KiA44GG44Gu77yfX-OCtOODquOBoQ.dat", num:"24", serif:"なんでそんなこと言うの？", chara:"ゴリち" },
+  { encodedFile: "MjVf5L2V5Yem6KGM44GP44Gu77yfX-ODkOODvOODvOODvOODvOODvOODvOODs-OBoQ.dat", num:"25", serif:"何処行くの？", chara:"バーーーーーーんち" },
+  { encodedFile: "MjZf5ZCb44Gv44KG44GL44Gh44Gg44GR6KaL44Gm44KM44Gw6Imv44GE44GuX-ODn-ODq-OBoeODvA.dat", num:"26", serif:"君はゆかちだけ見てれば良いの", chara:"ミルちー" },
+  { encodedFile: "Mjdf44Gp44GG44GX44Gm77yfX-OCrOODluOBoQ.dat", num:"27", serif:"どうして？", chara:"ガブち" },
+  { encodedFile: "Mjhf44Gd44Gu6Laz44GY44KD5LiK5omL44GP6YCD44GS44KJ44KM44Gq44GE44Go5oCd44GG44GR44GpX-OBoOOCieOBkeOBoQ.dat", num:"28", serif:"その足じゃ上手く逃げら…いと思うけど", chara:"だらけち" },
+  { encodedFile: "Mjlf44KC44GG6aOf44G544Gh44KD44GKX-mjn-OCgOOBoQ.dat", num:"29", serif:"もう食べちゃお", chara:"食むち" },
+  { encodedFile: "MzBf5oSb44GX44Gm44KLX-OBpOOCgOOBoQ.dat", num:"30", serif:"愛してる", chara:"つむち" },
+];
+
+// =====================================================================
+//  セリフファイル指定ここまで
+// =====================================================================
+
+// カラーパレット（キャラクターごとに割り当て）
+const palette = [
+  "#ff6eb4","#ff8c42","#f5c800","#5ec97a","#4db6e8",
+  "#a67cff","#ff5e7a","#00c9a7","#ff7eb3","#6bcbff",
+];
+const charaColorMap = {};
+let colorIdx = 0;
+function getCharaColor(chara) {
+  if (!charaColorMap[chara]) {
+    charaColorMap[chara] = palette[colorIdx % palette.length];
+    colorIdx++;
+  }
+  return charaColorMap[chara];
+}
+
+// ── DOM 生成 ──────────────────────────────────────────
+const container   = document.getElementById("card-container");
+const nowPlaying  = document.getElementById("now-playing");
+const nowText     = document.getElementById("now-text");
+
+let currentAudio  = null;
+let currentCard   = null;
+let currentBtn    = null;
+
+
+// カード生成
+voices.forEach((v, i) => {
+  const color = getCharaColor(v.chara);
+  const card = document.createElement("div");
+  card.className = "card";
+  card.dataset.chara = v.chara;
+  card.style.setProperty("--accent-color", color);
+
+  card.innerHTML = `
+    <div class="card-meta">
+      <span class="num-badge">${v.num}</span>
+      <span class="chara-name">${v.chara}</span>
+    </div>
+    <div class="serif-text">${v.serif}</div>
+    <button class="play-btn" aria-label="再生">
+      <span class="icon">▶</span> 再生
+    </button>
+  `;
+
+  const btn = card.querySelector(".play-btn");
+  btn.addEventListener("click", () => togglePlay(v, card, btn));
+  container.appendChild(card);
+});
+
+// ── 再生制御 ─────────────────────────────────────────
+function togglePlay(v, card, btn) {
+  // 同じカードをもう一度押したら停止
+  if (currentAudio && currentCard === card) {
+    stopCurrent();
+    return;
+  }
+  // 別のカードが再生中なら止める
+  if (currentAudio) stopCurrent();
+
+  const audio = new Audio(`audio/${v.encodedFile}`);
+  currentAudio = audio;
+  currentCard  = card;
+  currentBtn   = btn;
+
+  setPlaying(true, btn, card, v.serif);
+  audio.play().catch(() => {
+    // 音声ファイルが見つからない場合のフォールバック
+    console.warn("音声ファイルが見つかりません:", v.encodedFile);
+    setPlaying(false, btn, card, "");
+  });
+  audio.addEventListener("ended", () => {
+    setPlaying(false, btn, card, "");
+    currentAudio = currentCard = currentBtn = null;
+  });
+}
+
+function stopCurrent() {
+  if (!currentAudio) return;
+  currentAudio.pause();
+  currentAudio.currentTime = 0;
+  setPlaying(false, currentBtn, currentCard, "");
+  currentAudio = currentCard = currentBtn = null;
+}
+
+function setPlaying(flag, btn, card, serif) {
+  btn.classList.toggle("playing", flag);
+  card.classList.toggle("playing", flag);
+  btn.innerHTML = flag
+    ? '<span class="icon">♪</span> 再生中'
+    : '<span class="icon">▶</span> 再生';
+  nowPlaying.classList.toggle("visible", flag);
+  if (flag) nowText.textContent = serif;
+}
+
+</script>
+</body>
+</html>
