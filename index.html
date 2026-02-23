@@ -224,6 +224,125 @@
   @media (max-width: 480px) {
     main { grid-template-columns: 1fr; }
   }
+
+  /* ── フッター ── */
+  .site-footer {
+    position: relative; z-index: 1;
+    margin: 0 auto 5rem;
+    max-width: 680px;
+    padding: 0 1.2rem;
+  }
+
+  .footer-card {
+    background: white;
+    border-radius: 24px;
+    padding: 1.6rem 2rem;
+    box-shadow: 0 4px 24px var(--shadow);
+    border: 2px solid #ffd6ec;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    color: white;
+    background: linear-gradient(135deg, var(--pink), var(--lavender));
+    padding: 0.3rem 0.9rem;
+    border-radius: 999px;
+    width: fit-content;
+  }
+
+  .footer-video-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s;
+  }
+  .footer-video-row:hover { transform: translateX(4px); }
+
+  .footer-thumb {
+    flex-shrink: 0;
+    width: 120px;
+    height: 68px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px var(--shadow);
+    position: relative;
+    background: #000;
+  }
+  .footer-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .footer-thumb .play-overlay {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.28);
+    border-radius: 12px;
+  }
+  .footer-thumb .play-overlay span {
+    display: block;
+    width: 28px; height: 28px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem;
+    color: var(--pink);
+    padding-left: 2px;
+  }
+
+  .footer-video-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .footer-video-title {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .footer-channel {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.76rem;
+    font-weight: 700;
+    color: var(--pink);
+  }
+  .footer-channel::before {
+    content: '🎬';
+    font-size: 0.85rem;
+  }
+
+  .footer-url {
+    font-size: 0.72rem;
+    color: #b090a8;
+    word-break: break-all;
+    padding: 0.5rem 0.8rem;
+    background: #fff5f9;
+    border-radius: 10px;
+    border: 1px dashed #ffc0dc;
+  }
+
+  @media (max-width: 480px) {
+    .footer-thumb { width: 90px; height: 52px; }
+    .footer-video-title { font-size: 0.82rem; }
+    .footer-card { padding: 1.2rem 1.2rem; }
+  }
 </style>
 </head>
 <body>
@@ -231,12 +350,38 @@
 <header>
   <div class="emoji-row">🌙　🦊　🍒</div>
   <h1>ゆかちボタン</h1>
-  <p>聞きたいセリフをタップ！</p>
+  <p>ゆかちの動画のチャット欄で言及されてたゆかちボタン、作っちゃいました。ボタンをタップしてゆかちの声を聞こう！</p>
 </header>
 
 
 
 <main id="card-container"></main>
+
+<!-- フッター：音声元動画 -->
+<footer class="site-footer">
+  <div class="footer-card">
+    <span class="footer-label">🦊 音声元動画はこちら！</span>
+    <a class="footer-video-row"
+       href="https://www.youtube.com/live/5U5koA0LH0E?si=zo2r_tKZBskaFllH"
+       target="_blank" rel="noopener noreferrer">
+      <div class="footer-thumb">
+        <img
+          src="https://img.youtube.com/vi/5U5koA0LH0E/mqdefault.jpg"
+          alt="動画サムネイル"
+          loading="lazy"
+        >
+        <div class="play-overlay">
+          <span>▶</span>
+        </div>
+      </div>
+      <div class="footer-video-info">
+        <div class="footer-video-title">【MyVoiceZoo】愛が溢れすぎたヤンデレ動物園！本日オープン！【 #神楽月ゆか #かぐゆ神楽 】 #新人vtuber</div>
+        <span class="footer-channel">神楽月ゆか / Kagurazuki Yuka</span>
+      </div>
+    </a>
+    <div class="footer-url">https://www.youtube.com/live/5U5koA0LH0E?si=zo2r_tKZBskaFllH</div>
+  </div>
+</footer>
 
 <!-- 再生中バー -->
 <div id="now-playing">
